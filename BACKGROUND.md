@@ -35,11 +35,11 @@ The sum counts labeled vertex assignments, including all orderings of an unorder
 
 ## 2. What the original method provides
 
-The project starts from *Permutationally Invariant Polynomial Descriptors as Colored Multigraphs* by Yiping Hao, Bina Fu, and Dong H. Zhang. The local source is author-provided. The relevant contraction method is primarily in Methods §§3.2–3.7. [Local source](arxiv_v1/main.tex) · [arXiv:2610.23034v1](https://arxiv.org/abs/2610.23034v1)
+The project starts from *Permutationally Invariant Polynomial Descriptors as Colored Multigraphs* by Yiping Hao, Bina Fu, and Dong H. Zhang. The repository contains the author's source for the main text, supplementary material, and figures. The relevant contraction method is primarily in Methods §§3.2–3.7. [Local source](arxiv_v1/main.tex) · [arXiv:2610.23034v1](https://arxiv.org/abs/2610.23034v1)
 
 ### Required reading for agents
 
-Before conducting research, read the original paper in full, including its figures, tables, and captions. Follow the files included by the main document. The unpublished supplement is outside the required reading. [Main source](arxiv_v1/main.tex)
+**Before conducting research, read the original paper's main text in full, including figures, tables, and captions.** Start with the [main source in this repository](arxiv_v1/main.tex) and follow the included files in order. The arXiv link above is a reference for the preprint version.
 
 1. [Abstract](arxiv_v1/sections/abstract.tex)
 2. [Introduction](arxiv_v1/sections/introduction.tex)
@@ -47,6 +47,8 @@ Before conducting research, read the original paper in full, including its figur
 4. [Results](arxiv_v1/sections/results.tex)
 5. [Discussion](arxiv_v1/sections/discussion.tex)
 6. [Conclusion](arxiv_v1/sections/conclusion.tex)
+
+The original supplement is available in this repository as optional reading for relevant research. It was separate from arXiv v1. [Supplementary material](arxiv_v1/sections/supplement.tex)
 
 Record the version and scope actually read. Distinguish the paper's results from the new questions and candidate constructions in this project. On resumption, use the reading record to revisit the relevant material.
 

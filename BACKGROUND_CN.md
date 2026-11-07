@@ -35,13 +35,13 @@ $$
 
 ## 2. 原始方法提供了什么？
 
-原始来源：[用户提供的论文源文件](arxiv_v1/main.tex)与 [arXiv:2610.23034v1](https://arxiv.org/abs/2610.23034v1)，题目为 *Permutationally Invariant Polynomial Descriptors as Colored Multigraphs*，作者为 Yiping Hao、Bina Fu、Dong H. Zhang。`arxiv_v1/` 收录作者提供的正文资料。相关方法主要位于正文方法部分 §3.2–3.7。
+原始来源：[用户提供的论文源文件](arxiv_v1/main.tex)与 [arXiv:2610.23034v1](https://arxiv.org/abs/2610.23034v1)，题目为 *Permutationally Invariant Polynomial Descriptors as Colored Multigraphs*，作者为 Yiping Hao、Bina Fu、Dong H. Zhang。`arxiv_v1/` 收录作者提供的正文、补充材料和图件。相关方法主要位于正文方法部分 §3.2–3.7。
 
 ### Agents 的必读范围
 
-**开展研究前，agents 必须完整读完原论文正文，不能只读摘要、方法片段或本文的概述。补充材料不读，因为它没有上传到 arXiv。**
+**开展研究前，agents 必须完整读完原论文正文，包括图表和说明。**
 
-本地阅读入口为 [arxiv_v1/main.tex](arxiv_v1/main.tex)。按照它实际引入的顺序，完整阅读以下文件及正文中的图表和说明：
+从仓库内的 [arxiv_v1/main.tex](arxiv_v1/main.tex) 开始，按它引入的顺序阅读以下文件。上面的 arXiv 链接可用于查阅公开版本。
 
 1. [摘要](arxiv_v1/sections/abstract.tex)
 2. [引言](arxiv_v1/sections/introduction.tex)
@@ -50,7 +50,7 @@ $$
 5. [讨论](arxiv_v1/sections/discussion.tex)
 6. [结论](arxiv_v1/sections/conclusion.tex)
 
-未上传 arXiv 的原论文补充材料留在本地。必读范围以 `main.tex` 引入的公开正文为准。
+原论文的补充材料随仓库提供，研究相关问题时可以直接查阅。它未收入 arXiv v1，属于选读。 [补充材料](arxiv_v1/sections/supplement.tex)
 
 阅读后应能区分原论文已经给出的方法、本项目希望解决的新问题，以及此前讨论中尚待核验的构造。记录实际阅读的版本与范围，不得未读就声称已读完；续接同一研究时可依据已有阅读记录定位复查，不要求每轮从头重读。
 

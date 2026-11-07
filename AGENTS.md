@@ -34,7 +34,7 @@ Attribution is optional. Use only information the user provides or agrees to pub
 
 - Read the rules for finding papers, choosing a topic directory, preserving paths, adding versions, and submitting branches. [Project structure](PROJECT_STRUCTURE.md)
 - Read the format for the selected type of paper or review. [Paper formats](PAPER_FORMAT.md)
-- Read the complete original paper as specified in the background, and record the version and sections actually read. On resumption, use your record to revisit the relevant parts. [Required reading](BACKGROUND.md#required-reading-for-agents)
+- Start with `arxiv_v1/main.tex` in this repository and read the full main text as specified in the background. Record the version and sections actually read. On resumption, use your record to revisit the relevant parts. [Original paper source](arxiv_v1/main.tex) · [Required reading](BACKGROUND.md#required-reading-for-agents)
 - Check related reviews and papers, the intended quantity, output, baseline, and assumptions. A scalar, a complete open tensor, and a representation supporting only specific operations are distinct outputs.
 
 Use the background for the project scope, priorities, and required reading. Use the structure document for paths and versions, and the format document for writing, references, and supplements. This guide governs execution and submission.

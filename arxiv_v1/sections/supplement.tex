@@ -1,0 +1,248 @@
+\section{Supporting Information (SI)}\label{sec:supporting-information}
+
+\subsection{SI.1 One-to-one correspondence between monomial orbits and colored-multigraph isomorphism classes}\label{sec:si-orbit-cmg}
+
+Let \(m_1,m_2\) be two monomials. If there exists \(g\in G\) such that \(g\cdot m_1=m_2\), then \(g\) permutes atom labels within each element type and therefore induces a color-preserving bijection between vertices. All variable exponents remain unchanged, so edge multiplicities are preserved and \(F_{m_1}\cong_{\rm color}F_{m_2}\).
+
+Conversely, let \(h:F_{m_1}\to F_{m_2}\) be a graph isomorphism that preserves colors and edge multiplicities. For each color \(a\), \(h\) gives a bijection from the labels of element \(a\) occurring in \(m_1\) to those occurring in \(m_2\). This partial bijection between finite sets can be extended arbitrarily to a full permutation \(g_a\in S_{M_a}\) of \(\mathcal A_a\). Let \(g=(g_1,\ldots,g_E)\in G\). The exponents on every atom pair then correspond under \(h\), and hence \(g\cdot m_1=m_2\).
+
+If the number of vertices of some color exceeds the number of atoms of that element in the system, the partial bijection above cannot be embedded in \(\mathcal A_a\). The graph then corresponds to no PIP of that system. Equivalently, in a unified representation retaining every graph pattern, it may be regarded as the zero polynomial. After excluding color exhaustion, the mapping between orbits and graph-isomorphism classes is both injective and surjective.
+
+\subsection{SI.2 Normalization by the automorphism-group order}\label{sec:si-automorphism}
+
+Fix a graph pattern \(F\) and a monomial \(m\) obtained from it. Consider a color-preserving injective labeling \(\phi\) that produces \(m\). If \(\sigma\in\operatorname{Aut}_\chi(F)\), then \(\phi\circ\sigma\) produces exactly the same monomial because \(\sigma\) preserves every edge and its multiplicity. Every automorphism therefore generates one repetition.
+
+Conversely, if two injective labelings \(\phi,\psi\) produce the same monomial, then \(\phi^{-1}\circ\psi\) defines a color-preserving vertex bijection on the atoms involved. Equality of every variable exponent in the two monomials shows that this bijection preserves all edge multiplicities and therefore belongs to \(\operatorname{Aut}_\chi(F)\). The labelings that produce any one orbit monomial consequently form a free automorphism-group orbit of size \(|\operatorname{Aut}_\chi(F)|\).
+
+It follows that
+
+\[
+J_F=|\operatorname{Aut}_\chi(F)|P_F.
+\]
+
+For example, the automorphism group of a same-color single-edge graph has order 2. Its restricted labeling sum contains both \(x_{ij}\) and \(x_{ji}\), and division by 2 leaves each unordered atom pair exactly once. If the endpoints have different colors, the automorphism-group order is 1.
+
+\subsection{SI.3 Offline generation of quotient-graph and M\"obius coefficients}\label{sec:si-mobius}
+
+For a labeling map \(\phi\), place vertices receiving the same atom label in one block. The resulting partition into equivalence classes is the coincident-label partition used in the main text.
+
+For each input graph \(F\), the sparse integer row required by the inversion can be generated as follows:
+
+\begin{verbatim}
+input: colored multigraph F
+accumulator C := empty map from canonical graph to integer
+
+for each tuple of set partitions pi = (pi_a)_a, pi_a in Pi(V_a(F)):
+    if any block of pi contains adjacent vertices:
+        continue
+    Q := quotient graph F / pi
+    q := canonical_colored_multigraph_code(Q)
+    mu := (-1)^(|V(F)|-|pi|) * product over blocks B of (|B|-1)!
+    C[q] := C[q] + mu
+
+return C / |Aut_color(F)|
+\end{verbatim}
+
+To construct the forward relation \(H_F=\sum_Qc(F,Q)J_Q\) instead, replace \(\mu\) in the loop by 1. After isomorphic quotient graphs are combined by canonicalization, \(C[q]\) is an integer. Dividing at the end by the automorphism-group order of the input graph gives the rational coefficients that map the \(H_Q\) to \(P_F\). In an implementation, coefficients can be stored as reduced integer pairs to avoid floating-point error in the offline stage.
+
+The colored partition lattice is the direct product of the \(\Pi(V_a)\), so its M\"obius function factors into contributions from the blocks of each color. For the centered descriptors of Section 4, a color is the complete color \((a,s)\), with \(s\in\{\mathrm B,\mathrm W\}\), and the corresponding partition lattice is \(\prod_{a,s}\Pi(V_{a,s})\). Black and white vertices of the same element may not occupy the same block. A partition that places adjacent vertices in one block can be discarded in advance because its quotient has a self-loop and its numerical contribution vanishes by \(x_{ii}=0\).
+
+\subsection{SI.4 Algebraic generation of disconnected PIPs}\label{sec:si-disconnected}
+
+Let \(F=F_1\sqcup\cdots\sqcup F_k\), where the \(F_i\) are connected components. First consider \(k=2\). The product \(J_{F_1}J_{F_2}\) enumerates injective labelings of the two graphs independently, without requiring the same-color atom sets used by different components to be disjoint.
+
+If the two image sets are disjoint, their union is an injective labeling of \(F\). After isomorphic terms are combined, exchanges of components and internal automorphisms produce a fixed nonzero coefficient of \(P_F\). If the image sets overlap, at least one pair of same-color vertices from different components is identified. The identification preserves total edge multiplicity but joins the two original components into one quotient component, so the quotient has strictly fewer than two connected components. Thus,
+
+\[
+P_{F_1}P_{F_2}=c_FP_F+\sum_{\kappa(Q)<2}c_QP_Q,
+\qquad c_F\ne0.
+\]
+
+Rearrangement expresses \(P_F\) in terms of the two connected PIPs and same-degree PIPs with fewer components. For general \(k\), multiply \(F_1\sqcup\cdots\sqcup F_{k-1}\) by \(F_k\) and proceed inductively on the number of components. The induction terminates for finite \(k\), so every disconnected orbit sum lies in the algebra generated by connected orbit sums.
+
+\subsection{SI.5 Implementation details of multigraph canonicalization}\label{sec:si-canonicalization}
+
+Initial vertex features for an uncolored multigraph include weighted degree, ordinary degree, and the multiset of incident edge multiplicities. In each WL-1 iteration, the current color is hashed together with the multiset of ``edge multiplicity--neighbor color'' pairs in sorted order. Once the color partition stabilizes, singleton cells provide fixed vertex positions.
+
+If nonsingleton cells remain, one cell is selected for individualization and color refinement is run again. If two nodes of the search tree lie in the same orbit under a currently known automorphism, only one representative is retained. A branch is pruned as soon as its partial adjacency encoding is lexicographically worse than the current best solution. Every leaf produces a complete vertex ordering and the corresponding sequence of upper-triangular edge multiplicities; the globally lexicographically smallest sequence is the canonical code.
+
+For a colored graph, canonicalization begins from a partition in which application-level vertex colors cannot be merged: global PIPs use element colors, while centered descriptors use complete ``element--black/white'' colors. Edge multiplicities participate in every refinement round and in the final encoding, so parallel-edge structure is retained. Enumeration completeness at each degree used in the article should be cross-validated against small-scale brute-force traversal and the OEIS A050535 counts. A general-purpose canonical-labeling implementation should retain the same regression tests.
+
+\subsection{\texorpdfstring{SI.6 Maximum-treewidth formula: proof for \(d\le9\) and exhaustive verification for \(10\le d\le14\)}{SI.6 Maximum-treewidth formula: proof for d <= 9 and exhaustive verification for 10 <= d <= 14}}\label{sec:si-treewidth}
+
+Among complete graphs with \(d\) edges, the largest \(K_t\) satisfies
+
+\[
+\binom{t}{2}\le d,
+\]
+
+and \(\operatorname{tw}(K_t)=t-1\). A treewidth of
+
+\[
+\left\lfloor\frac{\sqrt{1+8d}-1}{2}\right\rfloor
+\]
+
+is therefore attainable.
+
+For \(d\le2\), a graph contains no cycle and has treewidth at most 1. For \(3\le d\le5\), it cannot contain a \(K_4\) minor because constructing \(K_4\) requires at least six edges; its treewidth is therefore at most 2, attained by the triangle. For \(6\le d\le9\), \(K_4\) gives treewidth 3. By the forbidden-minor characterization of partial 3-trees due to Arnborg, Proskurowski, and Corneil {[}13{]}, a graph of treewidth greater than 3 must contain one of a finite list of minors. The smallest edge count in that list is the 10 edges of \(K_5\); every other minimal forbidden graph has more edges. Minor operations cannot increase edge count, so no graph with at most nine edges can have treewidth greater than 3.
+
+The piecewise formula is therefore exact for \(d\le9\). This proof uses the edge count of the simple support graph. Parallel edges in a multigraph can only reduce the support-edge count relative to total algebraic degree and hence do not weaken the bound.
+
+For \(10\le d\le14\), we additionally performed a complete computational verification. Because edge multiplicities do not affect the simple support graph or its treewidth, it is sufficient to examine simple graphs with at most \(d\) edges. Since the treewidth of a disconnected graph is the maximum treewidth of its connected components, only nonisomorphic connected simple graphs need be enumerated at each layer. We used \texttt{nauty geng} {[}14{]} to generate all isomorphism classes and an independent \(\mathcal O^*(2^n)\) subset dynamic program to compute the exact treewidth of every graph. The results by layer are
+
+\begin{longtable}[]{@{}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.16}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.28}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.30}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.26}}@{}}
+\toprule\noalign{}
+Support edges \(d\) & Connected simple graphs & Maximum exact treewidth & Closed-form prediction \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+10 & 2,322 & 4 & 4 \\
+11 & 8,071 & 4 & 4 \\
+12 & 29,503 & 4 & 4 \\
+13 & 112,822 & 4 & 4 \\
+14 & 450,141 & 4 & 4 \\
+\end{longtable}
+
+At every layer, the number of generated graphs agrees with published counts of nonisomorphic connected simple graphs {[}14{]}. We checked 602,859 graphs in total and found none with treewidth greater than 4. Conversely, \(K_5\) has treewidth 4; attaching pendant edges to \(K_5\) leaves its treewidth unchanged and attains this value at every degree from 10 through 14. The closed form is therefore exact over the tested domain \(d\le14\). The range \(d\le9\) follows from the graph-theoretic proof above, whereas \(10\le d\le14\) is a reproducible exhaustive computational proof that depends on the correctness of the enumerator and exact oracle; it is not an extrapolation to higher degree.
+
+The contraction-order heuristic was tested separately on the same support graphs by traversing every minimum-\((\mathrm{fill},\mathrm{degree})\) tie at each elimination state. No nonoptimal path occurs through \(d=12\). The 13-edge graph \texttt{G?o\textasciitilde{}f\_} is the first tie counterexample: its exact treewidth is 3, while one valid heuristic path has width 4. For the 14-edge graph \texttt{H?bfBPw}, the current deterministic tie rule itself returns width 4 although the exact treewidth is 3. Verification of the treewidth formula through degree fourteen and verification of heuristic optimality through degree twelve are therefore independent results.
+
+\subsection{SI.7 Shared contraction construction through degree five and FLOP conventions}\label{sec:si-flops}
+
+This section specifies the computational convention used for the one-element low-order example in Section 3.6. Let \(X=X^{\mathsf T}\) and \(X_{ii}=0\). If only upper-triangular elements of a symmetric matrix square are computed and then copied by symmetry, there are \(M(M+1)/2\) dot products, each of length \(M\). The numbers of multiplications and additions are therefore
+
+\[
+N_{\mathrm{mul}}
+=\frac{M^2(M+1)}{2},
+\qquad
+N_{\mathrm{add}}
+=\frac{M(M+1)(M-1)}{2},
+\]
+
+for a total of
+
+\[
+N_{\mathrm{flop}}
+=M^3+\frac{M^2-M}{2}.
+\]
+
+The main text represents the leading term by one \(M^3\) computational unit. A practical BLAS kernel may compute the full output, use a symmetry-specialized kernel, or adopt a different fused multiply--add convention. The ``node counts'' below must therefore be distinguished from hardware-measured FLOPs.
+
+First compute \(B=X^2\). The third-order triangle, which reaches treewidth 2, satisfies
+
+\[
+H_{C_3}=\operatorname{tr}(X^3)=\langle X,B\rangle.
+\]
+
+Representative fourth-order patterns of treewidth 2 require no new matrix multiplication. For example,
+
+\[
+H_{C_4}=\operatorname{tr}(X^4)=\langle B,B\rangle,
+\]
+
+while the triangle with edge multiplicities \((2,1,1)\) satisfies
+
+\[
+H_{\triangle(2,1,1)}=\langle X^{\circ2},B\rangle.
+\]
+
+For a triangle with an attached terminal edge, let \(s_i=\sum_jX_{ij}\), and denote the triangle contribution rooted at \(i\) by
+
+\[
+t_i=(X^3)_{ii}=\sum_jX_{ij}B_{ij}.
+\]
+
+The complete pattern is \(\sum_i s_it_i\), requiring only \(O(M^2)\) row reductions. The remaining connected fourth-order patterns are trees or permit analogous reductions; disconnected patterns are recovered from products of lower-order results and descent relations. Once \(B\) is stored, no additional \(M^3\) node is needed at fourth order.
+
+The five-cycle first requires a further matrix-chain intermediate:
+
+\[
+C=XB=X^3,
+\qquad
+H_{C_5}=\operatorname{tr}(X^5)=\langle B,C\rangle.
+\]
+
+Because \(B=X^2\), \(B\) commutes with \(X\), so \(C\) is symmetric and only its upper triangle need be computed. Separately, define \(Y=X^{\circ2}\) and compute
+
+\[
+Z=XY.
+\]
+
+Then
+
+\[
+H_{\triangle(2,2,1)}=\langle Y,Z\rangle.
+\]
+
+Terminal extensions of this weighted triangular core, as well as the four-cycle with one strengthened edge, can reuse \(Z\), \(B\), and row reductions. This yields the three highest-order matrix intermediates \(B,C,Z\) through degree five.
+
+Another easily misclassified fifth-order pattern is a four-cycle with an attached terminal edge. Again let \(s_i=\sum_jX_{ij}\). The four-cycle contribution rooted at \(i\) is
+
+\[
+(X^4)_{ii}=\sum_jB_{ij}^2,
+\]
+
+so the entire pattern is \(\sum_i s_i(X^4)_{ii}\). It does not require explicit construction of \(X^3\) or any new matrix product. The indispensable use of \(C=X^3\) comes from the five-cycle, not from the terminally extended four-cycle.
+
+It is important that \(Z\) is generally asymmetric. Materializing the full \(Z\) by a classical algorithm requires \(M^3\) multiplications and approximately \(M^3\) additions, rather than approximately \(M^3/2\) of each for a symmetric matrix square. Thus,
+
+\[
+T_{\le5}(M)=3M^3+h(5)M^2+O(M)
+\]
+
+should be interpreted as a node count after normalizing one dense width-two contraction to one \(M^3\)-scale unit. A strict scalar count of multiplications and additions should instead be written as
+
+\[
+T_{\le5}(M)=\gamma_5M^3+O(M^2),
+\]
+
+where \(\gamma_5\) depends on whether \(Z\) is materialized in full, whether only projections required by the targets are computed, and which matrix kernels are used. After the shared contraction DAG is implemented, \(\gamma_5\) will be reported from the generated operator table and measured profiles. Until then, the three-node construction is an upper bound, not a claim of a model-independent minimum scalar FLOP constant.
+
+For multiple elements, let the dummy-index colors be \(a=1,\ldots,S\). If \(A_a\in\mathbb R^{M_a\times R}\), the corresponding shared intermediate splits into
+
+\[
+G_a=A_a^{\mathsf T}A_a\in\mathbb R^{R\times R}.
+\]
+
+The total arithmetic cost is proportional to
+
+\[
+R^2\sum_{a=1}^{S}M_a,
+\]
+
+and does not automatically decrease when the dummy index is split. If every color channel must be retained separately, the cache grows from one \(R\times R\) matrix to as many as \(S\) such matrices; general combinations of distinct free colors also generate rectangular blocks. Element coloring can reduce the size of an individual kernel while increasing the number of intermediates and the memory-traffic burden. Its practical cost must therefore be evaluated with a shared DAG that includes colored dimensions.
+
+\subsection{SI.8 Equivariance of descriptors centered on unstructured black clusters}\label{sec:si-equivariance}
+
+Let \(D_F(C;\mathbf R)\) be the unordered centered-cluster descriptor defined in Section 4, and let \(g\in G\) be a permutation of like atoms. After applying \(g\) to the geometry, every pair variable satisfies
+
+\[
+x_{jk}(g\mathbf R)=x_{g^{-1}j,g^{-1}k}(\mathbf R).
+\]
+
+The permutation simultaneously maps the central cluster \(C\) to \(gC\) and supplies the bijections
+
+\[
+g:\mathcal B_a(C)\longrightarrow\mathcal B_a(gC),
+\qquad
+g:\mathcal W_a(C)\longrightarrow\mathcal W_a(gC).
+\]
+
+In the labeling sum for \(D_F(gC;g\mathbf R)\), make the change of variables \(\phi'=g^{-1}\circ\phi\). This change preserves the labeling domain and injectivity condition of every complete color class and establishes a bijection between the legal labelings for \(C\) and those for \(gC\). By the pair-variable transformation above, every product term returns to its corresponding term in the original geometry. Hence,
+
+\[
+D_F(gC;g\mathbf R)=D_F(C;\mathbf R),
+\]
+
+or equivalently,
+
+\[
+D_F(C;g\mathbf R)=D_F(g^{-1}C;\mathbf R).
+\]
+
+The descriptor therefore permutes synchronously with the central atom subset and, for fixed \(C\), is separately invariant under permutations of like black atoms within \(C\) and like white atoms in its complement. Because \(C\) is a set from the outset, no ordered cluster slots, internal geometric structure, or additional center permutation group is required. For an atom center \(C=\{i\}\), the result reduces to ordinary atomwise equivariance. Undirected bonds and general clusters are the direct \(|C|=2\) and \(|C|>2\) instances of the same result.
