@@ -1,0 +1,407 @@
+\section{Results}\label{sec:results}
+
+\subsection{1 Comparison with previous methods on small systems}\label{sec:small-system-comparison}
+
+We first compare the offline generation time of the CMG graph-pattern method with existing PIP/FI generation programs for several representative permutation groups. All programs are restricted to one thread.
+The FI-2025 row reports published results~\cite{Hao2025PIPFIAlgorithms}. FIgenerator is an improved software implementation that retains the overall algorithm of FI-2025, with the main improvement being the replacement of binary search with hash-based lookup. The FIgenerator and CMG data are reruns conducted in this work.
+FIgenerator records the CPU time for the target degree alone, whereas CMG records cumulative wall-clock time from process startup through completion of the target degree.
+
+
+For the \(A_2B_7\) system, the generation times are as follows.
+
+\begingroup
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2200}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1560}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1560}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1560}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1560}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1560}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Method
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Degrees 1--3
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Degree 4
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Degree 5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Degree 6
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Degree 7
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+FI-2025 & 0.025 s & 0.220 s & 1.500 s & 23.000 s & 344.000 s \\
+FIgenerator & 0.000 s & 0.040 s & 0.430 s & 5.190 s & 76.130 s \\
+CMG & 0.008 s & 0.054 s & 0.404 s & 3.194 s & 31.887 s \\
+\end{longtable}
+\endgroup
+
+For the larger permutation groups \(A_3B_9\) and \(A_7B_6C_2\), CMG still generates complete results through degree six in a short time.
+
+\begingroup
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1200}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2500}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1575}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1575}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1575}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1575}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+System
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Method
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Degrees 1--3
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Degree 4
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Degree 5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Degree 6
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(A_3B_9\) & FIgenerator & 0.020 s & 0.500 s & 10.730 s & 213.840 s \\
+\(A_3B_9\) & CMG & 0.010 s & 0.096 s & 0.962 s & 11.612 s \\
+\(A_7B_6C_2\) & FIgenerator & 0.070 s & 2.940 s & 101.180 s & 3,043.720 s \\
+\(A_7B_6C_2\) & CMG & 0.033 s & 0.342 s & 4.640 s & 70.830 s \\
+\end{longtable}
+\endgroup
+
+These results show that, at the commonly used degree-five and degree-six cutoffs, CMG completes offline generation for these small-molecule permutation groups in seconds to minutes.
+Generation times for both types of program increase with degree and the number of element-color combinations.
+
+\subsection{2 Generation time depends weakly on system size}\label{sec:size-independent-generation}
+
+To examine the system-size dependence of generation time at fixed degree, we construct a sequence containing \(2^n\) water molecules and generate all global PIPs through degree five without component-count or treewidth pruning.
+The numbers of oxygen atoms, hydrogen atoms, and total atoms are \(2^n\), \(2^{n+1}\), and \(3\times2^n\), respectively. These tests also use a single thread.
+
+\begingroup
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}[]{@{}rrrrr@{}}
+\toprule\noalign{}
+\(n\) & Water molecules & Total atoms & Degree-five outputs & CMG generation time \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & 1 & 3 & 33 & 0.015 s \\
+1 & 2 & 6 & 608 & 0.110 s \\
+2 & 4 & 12 & 1,827 & 1.034 s \\
+3 & 8 & 24 & 2,180 & 2.365 s \\
+4 & 16 & 48 & 2,183 & 2.951 s \\
+5 & 32 & 96 & 2,183 & 2.951 s \\
+19 & 524,288 & 1,572,864 & 2,183 & 2.973 s \\
+20 & 1,048,576 & 3,145,728 & 2,183 & 2.975 s \\
+\end{longtable}
+\endgroup
+
+The output count reaches 2,183 at 16 water molecules and does not grow thereafter; generation time also stabilizes near 2.9 s.
+At fixed degree five, each graph pattern requires only a bounded number of vertices of each color. Once the oxygen and hydrogen capacities exceed these bounds, color exhaustion removes no further patterns, and additional atoms do not create new CMG isomorphism classes.
+For fixed element types and algebraic degree, the offline generation cost of CMG is therefore determined primarily by the graph-pattern space and depends only weakly on the number of atoms.
+
+The following table lists the degree-five water-system cases completed by FIgenerator and the CMG times for the same systems. At \(n=4\), FIgenerator can no longer generate the corresponding PIPs within a reasonable time.
+Generation time for explicit monomial-orbit expansions grows rapidly with system capacity, whereas CMG soon reaches a plateau by generating at the graph-pattern level.
+(For \(n=0\), \texttt{0.000\ s} means that the runtime is below the resolution of \texttt{clock()} in that run, rather than that the computational cost is exactly zero.)
+\begingroup
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}[]{@{}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedleft
+\(n\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Water molecules
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Total atoms
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Degree-five outputs
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+FIgenerator cumulative CPU time
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+CMG generation time
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & 1 & 3 & 33 & 0.000 s & 0.015 s \\
+1 & 2 & 6 & 608 & 0.020 s & 0.110 s \\
+2 & 4 & 12 & 1,827 & 10.650 s & 1.034 s \\
+3 & 8 & 24 & 2,180 & 55,024.990 s & 2.365 s \\
+\end{longtable}
+\endgroup
+
+
+
+
+
+\subsection{3 Online evaluation on MD17}\label{sec:md17-evaluation}
+
+\subsubsection{3.1 Complete PIPs versus conventional explicit expansions}\label{md17-full-pip}
+
+We next compare online evaluation by CMG tensor-network descent with conventional explicit full-PIP formulas for the eight molecules in the original MD17 dataset \cite{Chmiela2017GDML}.
+Both paths generate the complete PIP set through degree five and produce identical output counts for each system.
+Tests use one logical CPU in the same environment as above, with all evaluations in fp64. CMG uses a JAX backend.
+At these system sizes, conventional monomial expansions are scarcely compilable by machine-learning frameworks such as JAX, so the traditional formulas are evaluated using a handwritten C++ program.
+
+The main test uses a batch size of 32. All reported times are divided by batch size and represent amortized time per configuration.
+
+Measurements show that batch size has little effect on the MD17 comparison when evaluation uses a single CPU core.
+
+CMG has two JAX backends that express the \(H_F\)-to-\(J_F\) descent differently: directly expanded calculations and sparse-matrix calculations in COO format.
+The former is faster in online evaluation, while the latter compiles faster. Compilation is bottlenecked by the sparse linear transformation from \(H_F\) to \(J_F\).
+
+Uracil uses the COO-JAX backend because the expanded form compiles too slowly. The other seven systems use directly expanded CMG calculations, producing the same complete PIP sets as the traditional program.
+
+\begingroup
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2000}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1000}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1400}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1900}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2000}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1700}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+System
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Atoms
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Full PIPs
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+CMG time/config.
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Legacy full-PIP time/config.
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Speedup
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+aspirin & 21 & 18,467 & 554.505 us & 25.011765 s & 45,106.4 \\
+benzene & 12 & 2,099 & 41.886 us & 49.548 ms & 1,182.9 \\
+ethanol & 9 & 3,233 & 46.849 us & 2.313 ms & 49.4 \\
+malon\-aldehyde & 9 & 8,605 & 153.648 us & 2.420 ms & 15.8 \\
+naph\-thalene & 18 & 2,180 & 51.694 us & 3.405529 s & 65,878.1 \\
+salicylic acid & 16 & 16,262 & 451.927 us & 885.535 ms & 1,959.5 \\
+toluene & 15 & 2,167 & 47.341 us & 456.611 ms & 9,645.2 \\
+uracil & 12 & 54,760 & 3.463658 ms & 50.552 ms & 14.6 \\
+\end{longtable}
+\endgroup
+
+Theoretically, tensor descent scales as \(M^3\), whereas conventional explicit evaluation scales approximately as \(M^{10}\);
+however, the measured speedups are smaller than the asymptotic \(M^7\) ratio implied by the leading powers.
+One reason is the difference in the prefactors of the operation counts:
+the prefactor for conventional expanded evaluation is approximately \(0.001\), whereas that of the present algorithm is close to \(10\).
+In addition, system-size-independent overhead remains substantial for small systems.
+For a system of approximately ten atoms, the \(M^3\) tensor-contraction component involves only about \(10^4\) floating-point operations;
+when the PIP count is large, the sparse linear transformation \(H_F\rightarrow J_F\) can require more operations than these tensor contractions.
+Consequently, the total cost for the MD17 systems is not yet fully dominated by the asymptotic \(M^3\) term.
+
+\subsubsection{3.2 Connected CMG generators versus fundamental invariants}\label{md17-connected-fi}
+
+The complete PIP set contains many more polynomials than may be needed in practice. Traditional algorithms usually replace it with fundamental invariants (FIs). As discussed below, connected CMG patterns can be viewed as their counterparts.
+For these small molecules, color exhaustion allows some connected generators to be eliminated, so the connected-pattern count exceeds the FI count. We compare tensor-network contraction and descent for connected patterns with traditional FI evaluation on the same eight MD17 systems.
+Tests again use one thread in the same environment. All JAX backends are compiled in directly expanded form.
+
+
+\begingroup
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.200}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.110}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.090}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.090}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.190}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.180}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.140}}@{}}
+\toprule\noalign{}
+System & Conn. graphs & FIs & \shortstack[r]{Conn./\\FI} & Connected P time/config. & Legacy FI time/config. & Descriptive speedup \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+aspirin & 5,002 & 4,428 & 1.130 & 225.466 us & 331.030 ms & 1,468.2 \\
+benzene & 787 & 721 & 1.092 & 26.248 us & 6.450 ms & 245.7 \\
+ethanol & 1,521 & 517 & 2.942 & 42.866 us & 266.927 us & 6.2 \\
+malon\-aldehyde & 3,501 & 1,025 & 3.416 & 104.712 us & 224.896 us & 2.15 \\
+naph\-thalene & 787 & 784 & 1.004 & 32.356 us & 123.723 ms & 3,823.8 \\
+salicylic acid & 4,723 & 3,605 & 1.310 & 183.095 us & 50.873 ms & 277.9 \\
+toluene & 787 & 774 & 1.017 & 29.955 us & 34.828 ms & 1,162.7 \\
+uracil & 15,348 & 5,266 & 2.915 & 602.149 us & 2.871 ms & 4.77 \\
+\end{longtable}
+\endgroup
+
+The CMG JAX backend remains substantially faster than traditional evaluation.
+The speedups are smaller than in the preceding comparison because FIs are much shorter than full PIPs and greatly reduce both complexity and operation count. Tensor descent still scales as \(M^3\), whereas FI evaluation scales approximately as \(M^6\).
+Connected-pattern evaluation is also faster than evaluation of the complete PIP set because retaining only connected patterns substantially reduces the work in the descent transform.
+
+\subsection{4 System-size scan for water clusters}\label{sec:water-cluster-scan}
+
+MD17 consists primarily of small molecules and does not yet reach the asymptotic system-size regime of fixed-degree-five tensor contractions.
+We therefore also test online evaluation of the complete PIP set through degree five for systems containing 1--1,024 water molecules.
+We record both the forward time for a scalar energy formed from the PIPs and the time for reverse-mode gradient evaluation. The input is a pair-variable matrix, and gradients are taken with respect to that matrix.
+These timings reflect the cost of neural-network backpropagation through a PIP layer in practical applications.
+Tests run on a single NVIDIA A100 GPU using JAX \texttt{float64}, with the median of seven runs reported.
+Reverse propagation costs substantially more than forward evaluation, but remains affordable; their time ratio gradually stabilizes as the system grows.
+
+\subsubsection{4.1 Batch size 1}\label{batch-size-1}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}[]{@{}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1426}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedleft
+Water molecules
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Atoms
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Energy forward
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Forward config./s
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Gradient
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Gradient config./s
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\shortstack[r]{Gradient/\\forward}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & 3 & 0.041 ms & 24,297.7 & 0.116 ms & 8,624.0 & 2.82 \\
+2 & 6 & 0.801 ms & 1,248.1 & 0.994 ms & 1,006.3 & 1.24 \\
+4 & 12 & 3.117 ms & 320.9 & 4.757 ms & 210.2 & 1.53 \\
+8 & 24 & 4.274 ms & 234.0 & 6.975 ms & 143.4 & 1.63 \\
+16 & 48 & 4.428 ms & 225.8 & 7.603 ms & 131.5 & 1.72 \\
+32 & 96 & 4.435 ms & 225.5 & 10.157 ms & 98.5 & 2.29 \\
+64 & 192 & 4.567 ms & 219.0 & 8.564 ms & 116.8 & 1.88 \\
+128 & 384 & 4.601 ms & 217.3 & 8.545 ms & 117.0 & 1.86 \\
+256 & 768 & 4.853 ms & 206.1 & 9.215 ms & 108.5 & 1.90 \\
+512 & 1,536 & 6.711 ms & 149.0 & 14.168 ms & 70.6 & 2.11 \\
+1,024 & 3,072 & 16.797 ms & 59.5 & 43.328 ms & 23.1 & 2.58 \\
+\end{longtable}
+\endgroup
+
+Tensor contractions become dominant only beyond 256 molecules. This reflects the computational characteristics of the GPU, which does not perform well with small batches.
+
+\subsubsection{4.2 Batched evaluation}\label{sec:batched-evaluation}
+
+The following table reports batched GPU evaluation on the same hardware. Batch size is 64 except for the 1,024-water system, where it is reduced to 32 because of GPU memory limits.
+Batching substantially amortizes fixed scheduling costs for small systems.
+
+\begingroup
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}[]{@{}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1426}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedleft
+Water molecules
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+batch size
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Energy forward
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Forward config./s
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Gradient
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Gradient config./s
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Peak GPU memory
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & 64 & 0.047 ms & 1,361,560 & 0.121 ms & 526,779 & \(<0.01\) GiB \\
+2 & 64 & 0.440 ms & 145,396 & 1.534 ms & 41,718 & 0.14 GiB \\
+4 & 64 & 1.291 ms & 49,578 & 13.843 ms & 4,623 & 0.59 GiB \\
+8 & 64 & 1.758 ms & 36,401 & 19.377 ms & 3,303 & 0.70 GiB \\
+16 & 64 & 1.927 ms & 33,218 & 19.211 ms & 3,331 & 0.79 GiB \\
+32 & 64 & 2.323 ms & 27,545 & 19.786 ms & 3,235 & 0.86 GiB \\
+64 & 64 & 3.312 ms & 19,322 & 21.522 ms & 2,974 & 1.08 GiB \\
+128 & 64 & 6.658 ms & 9,613 & 30.620 ms & 2,090 & 1.46 GiB \\
+256 & 64 & 22.506 ms & 2,844 & 73.137 ms & 875 & 4.41 GiB \\
+512 & 64 & 118.853 ms & 538 & 346.817 ms & 185 & 18.31 GiB \\
+1,024 & 32 & 383.558 ms & 83.4 & 1.114 s & 28.7 & 37.54 GiB \\
+\end{longtable}
+\endgroup
+
+
+
+\subsubsection{4.3 Water-system performance on one logical CPU}\label{h2o-cpu-staged-reverse}
+
+The same online evaluation and automatic differentiation are also tested on a single-core CPU backend.
+For larger systems, doubling the atom count increases forward time by approximately a factor of seven, close to the predicted cubic scaling. The reverse-to-forward time ratio also gradually stabilizes.
+
+\begingroup
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}[]{@{}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.105}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.095}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.105}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.175}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.175}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.175}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.170}}@{}}
+\toprule\noalign{}
+Water mol. & Atoms & PIPs & BS1 forward/config. & BS1 reverse/config. & BS64 forward/config. & BS64 reverse/config. \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & 3 & 33 & 0.016019 ms & 0.031614 ms & 0.000513 ms & 0.001041 ms \\
+2 & 6 & 608 & 0.063250 ms & 0.471319 ms & 0.015941 ms & 0.378941 ms \\
+4 & 12 & 1,827 & 0.379666 ms & 3.418046 ms & 0.099455 ms & 3.011995 ms \\
+8 & 24 & 2,180 & 0.589743 ms & 4.911698 ms & 0.176507 ms & 4.299896 ms \\
+16 & 48 & 2,183 & 0.737441 ms & 6.003300 ms & 0.263465 ms & 5.113668 ms \\
+32 & 96 & 2,183 & 1.451622 ms & 9.925987 ms & 0.948548 ms & 9.863802 ms \\
+64 & 192 & 2,183 & 4.448371 ms & 29.462652 ms & 4.624545 ms & 32.108822 ms \\
+128 & 384 & 2,183 & 22.774956 ms & 134.925561 ms & 25.978405 ms & 142.681873 ms \\
+256 & 768 & 2,183 & 160.189500 ms & 802.006957 ms & 163.278035 ms & 790.563696 ms \\
+512 & 1,536 & 2,183 & 1.166292 s & 5.196972 s & 1.118120 s & 4.888972 s \\
+1,024 & 3,072 & 2,183 & 8.104482 s & 34.928551 s & 8.105704 s & 34.225964 s \\
+\end{longtable}
+\endgroup

@@ -1,0 +1,18 @@
+\begingroup
+\widowpenalty=10000
+\clubpenalty=10000
+\section{Conclusion}\label{sec:conclusion}
+
+We have established a correspondence between PIP monomial orbits and colored multigraph isomorphism classes, 
+and developed graph-pattern generation and tensor-network descent on this basis. For fixed element types and degree cutoff, 
+offline generation is determined by a finite graph-pattern library and is no longer constrained by the number of atoms. 
+Online evaluation recovers the complete PIP basis through shared tensor contractions and quotient-graph descent, 
+with the principal system-size complexity controlled by graph contraction width. 
+For the commonly used complete basis through degree five, evaluation falls from the tenth-power scaling of conventional explicit index enumeration to cubic scaling.
+
+
+Numerical experiments confirm the computational advantages of this representation. Degree-five graph patterns for capacities of millions of atoms are generated in only a few seconds. Complete PIP evaluation on MD17 is accelerated by one to nearly five orders of magnitude, and forward and input-gradient calculations for water systems extend to more than three thousand atoms. These results show that enormous explicit orbit expansions are not a necessary price for retaining the complete PIP basis.
+
+The CMG representation also integrates PIPs naturally with modern tensor computation and automatic differentiation, and provides a unified language for global, atom-centered, bond-centered, and cluster-centered descriptions. Graph patterns have consistent feature semantics across systems, laying a foundation for transferable, trainable PIP potential models.
+\par
+\endgroup

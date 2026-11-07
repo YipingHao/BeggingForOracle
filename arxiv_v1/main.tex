@@ -1,0 +1,63 @@
+% !TeX program = xelatex
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{calc}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{longtable}
+\usepackage{siunitx}
+\usepackage{tikz}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue]{hyperref}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\graphicspath{{figures/}}
+\setcounter{secnumdepth}{-1}
+\captionsetup{font=small,labelfont=bf}
+\sisetup{detect-all,range-phrase=--,range-units=single}
+
+% Pandoc-generated list fragments use this helper.
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\title{Permutationally Invariant Polynomial Descriptors as Colored Multigraphs}
+\author{
+  Yiping Hao$^{1,2}$, Bina Fu$^{1,2,3,*}$, Dong H. Zhang$^{1,2,3}$\\[0.7em]
+  \small $^{1}$State Key Laboratory of Chemical Reaction Dynamics,\\[-0.2em]
+  \small Dalian Institute of Chemical Physics, Chinese Academy of Sciences,\\[-0.2em]
+  \small Dalian 116023, People's Republic of China\\
+  \small $^{2}$School of Chemical Sciences, University of Chinese Academy of Sciences,\\[-0.2em]
+  \small Beijing 100049, China\\
+  \small $^{3}$Hefei National Laboratory, Hefei 230088, China\\[0.4em]
+  \small $^{*}$Corresponding author: \href{mailto:bina@dicp.ac.cn}{bina@dicp.ac.cn}
+}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\input{sections/abstract}
+\end{abstract}
+
+\input{sections/introduction}
+\input{sections/method}
+\input{sections/results}
+\input{sections/discussion}
+\input{sections/conclusion}
+
+\section*{Acknowledgment}
+\begin{sloppypar}
+This work was supported by the Strategic Priority Research Program of the Chinese Academy of Sciences (XDB0970203), the National Natural Science Foundation of China (22525304 and 22288201),  the Innovation Program for Quantum Science and Technology (2021ZD0303305), and the Dalian Innovation Support Program (2021RD05).
+\end{sloppypar}
+
+\bibliographystyle{unsrtnat}
+\bibliography{references}
+
+\end{document}

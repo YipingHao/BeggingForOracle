@@ -1,0 +1,87 @@
+\section{Introduction}\label{sec:introduction}
+
+A potential energy surface (PES) is the ``fuel'' for molecular dynamics simulations: its energy and gradient govern nuclear motion.
+Decades ago, classical methods such as polynomial expansions and interpolation already enabled the construction of highly accurate PESs for low-dimensional systems containing three or four atoms \cite{Murrell1984PotentialEnergy,Ho1996RKHS}.
+As the number of atoms increases, however, the curse of dimensionality causes the costs of configuration sampling and function representation to rise rapidly, severely limiting the extension of these methods to larger systems.
+The introduction of machine-learning methods, including neural networks, opened new avenues for constructing high-dimensional PESs \cite{Sumpter1992NeuralPES,Blank1995NeuralPES}.
+From high-dimensional neural network potentials to more recent continuous-filter and equivariant message-passing models, machine-learned PESs have continued to develop, providing efficient tools for accurate simulations of large systems \cite{Behler2007HDNNP,Schutt2018SchNet,Batzner2022NequIP,Batatia2022MACE}.
+These methods for large systems typically use local or semilocal representations, with distance cutoffs controlling the spatial extent of atomic environments and the computational cost.
+At the same time, constructing a unified, highly accurate global PES for an entire molecular configuration remains an important research direction for chemical reactions, molecular dissociation, strongly coupled vibrations, and large-amplitude intramolecular rearrangements.
+
+Permutationally invariant polynomials (PIPs) are widely used for fitting PESs in gas-phase reaction dynamics and molecular spectroscopy \cite{Braams2009PIP,Qu2018PIPReview}.
+Their original construction can be understood as first expanding the energy as a polynomial in pairwise distance variables, then requiring monomials related by permutations of like atoms to share the same coefficient, thereby expressing the energy as a linear combination of monomial orbit sums; each such orbit sum, with every distinct monomial included once, is a PIP \cite{Xie2010MSA}.
+Subsequent PIP-NN methods use these polynomials as neural network inputs, combining an exactly permutation-invariant representation with nonlinear regression \cite{Jiang2013PIPNN,Li2013PIPNN2}.
+Global PIPs require neither a prescribed atomic-energy decomposition nor a fixed local cutoff, and offer exact symmetry, smooth differentiability, and systematic approximation.
+When strictly monotonic continuous transforms of interatomic distances are used as pair variables, the Stone--Weierstrass theorem\cite{Rudin1976Principles} guarantees that PIPs of increasing degree can uniformly approximate continuous permutation-invariant potential energy functions to arbitrary accuracy on compact configuration domains.
+For gas-phase reactions involving small systems, PIP-based PESs can combine very high fitting accuracy with efficient online evaluation, while their associated neural networks can require relatively few parameters \cite{Houston2022PIPGradients,Jiang2013PIPNN,Li2013PIPNN2}.
+
+PIPs have long been regarded as lacking scalability and being limited to small molecules, primarily because of the combinatorial explosion of monomials.
+For a system containing \(M\) atoms, there are \(K=\binom{M}{2}\) pair variables and \(\binom{K+d}{d}\) monomials of degree at most \(d\), corresponding to asymptotic growth of \(M^{2d}\).
+Conventional offline generation of PIP expressions requires identifying the orbits induced by permutations of like atoms within this enormous set of monomials and writing each independent PIP as a sum of monomials over specific atom labels.
+As the atom count and polynomial degree increase, the costs of offline generation, formula storage, and term-by-term online evaluation all grow sharply.
+Meanwhile, conventional PIP formulas are built directly from the variable set and permutation group of a particular system; changing the molecular composition or atom count also changes the variable space, group action, and analytic expressions.
+This makes it difficult to share fixed feature semantics across molecules as modern machine-learning potentials do, and most PIP PESs are tailored to individual systems.
+
+%Previous work has addressed these difficulties at different stages of the computation.
+%Automated generation and parallel implementations have extended the range of bases that can be constructed \cite{Moberg2021PIPUnrestricted}, and algorithms based on group generators avoid explicit traversal of every element of the permutation group \cite{Hao2025PIPFIAlgorithms}; analytic gradients and reverse differentiation have reduced the cost of evaluating potential energies and their derivatives \cite{Conte2020EfficientPIP,Houston2022PIPGradients}.
+%The recently developed JaxPIP organizes the evaluation of expanded monomials into dense matrix operations and segmented summation, enabling batched GPU evaluation and automatic differentiation in JAX \cite{Li2026JaxPIP}.
+%Other approaches control the size of the representation: fundamental invariants (FIs) organize neural network inputs using a finite set of algebraic generators \cite{Shao2016FINN,Chen2020FINN2,Fu2023FIReview}, while fragmentation and many-body decompositions represent large systems through combinations of smaller components \cite{Qu2024C14H30}.
+%However, these developments have not fundamentally alleviated the combinatorial explosion of monomials, which continues to restrict the extension of PIP methods, particularly global PIPs without distance cutoffs, to larger systems.
+
+Research on expression generation, numerical evaluation, and descriptor construction has extended the molecular sizes accessible to PIP methods.
+For expression generation, Moberg and Jasper developed automated, parallel software for generating PIPs \cite{Moberg2021PIPUnrestricted}.
+An algorithm based on permutation-group generators and graph connectivity analysis has pushed the generation of explicit fifth-degree PIP expressions to systems of approximately 30 atoms, 
+close to the largest sizes reported to date \cite{Hao2025PIPFIAlgorithms}.
+For online evaluation, Houston et al. used Mathematica to generate Fortran code for reverse differentiation, 
+enabling efficient force evaluation and joint fitting of energies and gradients \cite{Houston2022PIPGradients}.
+More recently, JaxPIP, developed by Li et al., 
+organizes explicit polynomial evaluation into tensor operations suited to batched GPU computation and integrates it with modern automatic differentiation, 
+with tests on systems containing 3--9 atoms \cite{Li2026JaxPIP}.
+The descriptors themselves can also be modified to reduce polynomial construction and evaluation costs.
+Among methods that retain a global molecular description, the fundamental invariant neural network (FI-NN) approach introduced by our group replaces the complete linear PIP basis with algebraic generators \cite{Shao2016FINN,Chen2020FINN2,Fu2023FIReview}.
+Recursive separating invariant neural networks (RSI-NNs) go further by adopting orbit separation as the design objective and constructing descriptors from low-correlation templates and recursive radial bases \cite{hao2026SRI}.
+These methods have been used to fit global PESs for systems containing approximately 20 atoms.
+Fragment-based representations restrict polynomial expansions to smaller components, 
+allowing larger molecules to be treated \cite{Conte2020EfficientPIP,Qu2024C14H30}.
+Li et al. extended MB-PIPNet to covalently bonded molecules, using PIPs to describe fragment internal structures and their environments and neural networks to predict fragment energy contributions.
+Its accuracy and computational efficiency were demonstrated for n-tetradecane, a 44-atom molecule \cite{Li_YuQiAlkanes}.
+Although these studies have substantially extended the applicability of PIPs and their variants, explicit monomial expansions of complete global PIP bases still face combinatorial growth.
+For global methods without fragmentation or local cutoffs, the practical upper limit on system size generally remains around 20 atoms; further increases in atom count and polynomial degree rapidly raise generation, storage, and evaluation costs.
+
+
+
+Here we identify an exact one-to-one correspondence between colored multigraphs (CMGs) and PIPs: each atom index occurring in a monomial corresponds to a vertex, vertex colors record chemical elements, and edge multiplicities record the powers of the corresponding pair variables.
+After specific atom labels are removed, the graph pattern retains the elemental composition, index incidences, and power structure of the monomial, while relabeling like atoms corresponds to graph isomorphisms that preserve colors and edge multiplicities.
+Thus, subject to elemental capacity constraints, PIP monomial orbits are in one-to-one correspondence with colored-multigraph isomorphism classes; the same principle has previously been used in the study of graph-invariant algebras to investigate graphs through algebraic invariant theory \cite{Thiery2000GraphInvariants}.
+We use this correspondence in the reverse direction to unify PIP generation, numerical evaluation, and cross-system description within a single graph representation.
+Reformulating PIPs as colored multigraphs allows a range of existing theoretical tools from graph algorithms to be introduced, with minor adaptations, for systematic use in PIP generation, algebraic transformations, and numerical evaluation.
+
+First, we address PIP formula generation.
+Through the correspondence above, generating a PIP basis becomes a problem of enumerating colored-multigraph isomorphism classes, with successive edge addition, graph-isomorphism deduplication, and element coloring directly yielding all graph patterns corresponding to PIPs at each degree.
+A degree-\(d\) monomial involves at most \(2d\) atoms, so for fixed element types and a fixed degree cutoff, the number of graph patterns has an upper bound independent of the system's atom count; a specific system need only exclude patterns for which its elemental capacities are insufficient.
+Once each element has sufficiently many atoms, every pattern can be realized, further increases in atom count produce no new PIP patterns, and the computational resources required for offline generation reach a constant plateau.
+We perform generation at the graph-pattern level without expanding each pattern into a sum of monomials over specific atom labels, thereby avoiding the combinatorial growth of explicit formula storage.
+Single-threaded numerical tests show that, after saturation, generating the complete set of graph patterns through fifth order for water systems consistently takes only about \(3\,\mathrm{s}\); even when the specified system capacity exceeds three million atoms, both the pattern count and generation time remain essentially unchanged.
+
+Second, we address the online evaluation of PIP formulas.
+We transform the labeling sum of a graph pattern into a dual tensor-network problem: first relaxing the requirement that indices for like atoms be distinct gives a graph-homomorphism sum that can be evaluated directly by tensor contraction, and M\"obius inversion on the partition lattice of same-color vertices then recovers the original PIP exactly through quotient-graph descent \cite{Lovasz2012GraphLimits,Curticapean2017Homomorphisms}.
+Variable elimination reorganizes the summation order for graph-homomorphism evaluation, with the computational complexity controlled by graph treewidth \cite{Dechter1999BucketElimination,MarkovShi2008TensorNetworks}; for the complete set of PIPs through degree \(d\) for \(M\) identical atoms, the leading system-size complexity in the range \(1\le d\le14\) verified here by exhaustive computation is
+\[
+\mathcal O\!\left(f(d)M^{\left\lfloor(\sqrt{1+8d}+1)/2\right\rfloor}\right),
+\]
+where \(f(d)\) is a relatively small constant independent of system size.
+At the commonly used fifth-order cutoff, the leading complexity of evaluating the complete PIP set with respect to the atom count \(M\) decreases from the \(M^{10}\) scaling of conventional explicit term-by-term evaluation to \(M^3\).
+Numerical tests on MD17 systems yield online evaluation speedups of approximately \(14.6\) to \(6.6\times10^4\), extending the practical evaluation of the complete global PIP set through degree five from just over twenty atoms with conventional explicit expansions to systems containing more than one thousand atoms.
+This tensorized computation can also be integrated directly into modern machine-learning frameworks, with reverse-mode automatic differentiation providing gradients with respect to the pairwise input variables \cite{Baydin2018AD}.
+
+Finally, we consider cross-system PIP modeling.
+The same colored multigraph can be labeled in systems with different atom counts and elemental compositions: changes in the system affect only the index summation domains, while the meaning of the graph pattern remains unchanged.
+Thus, for fixed element types and truncation rules, different systems can naturally share a set of PIP descriptors with fixed feature semantics.
+Building on this, we use black and white coloring to distinguish retained center indices from summed environment indices, constructing four classes of PIP descriptors defined consistently across systems: global molecular, atom-centered, bond-centered, and cluster-centered descriptors, which provide a unified representation and computational foundation for transferable PIP potentials.
+We give theoretical constructions of these descriptors and numerically validate global PIP generation and evaluation; cross-system potential learning is left for future work.
+Notably, existing atomic PIPs \cite{Allen2021aPIP} and transferable many-body PIP potentials for alkanes \cite{Qu2025TransferableAlkanes} both use symmetrization within small atom clusters followed by summation over atomic combinations.
+For the polynomial parts expressed in the same pair variables, this construction is mathematically equivalent to the two-stage labeling sum in our graph-theoretic formulation.
+These studies have already achieved cross-system sharing of features and parameters in specific systems and verified the resulting transferability.
+We further provide methods for graph-pattern generation, complexity analysis, and tensor-contraction evaluation, establishing a computational basis for extending such approaches to larger and more general systems.
+
+Our results show that retaining a complete PIP basis need not incur the combinatorial cost of explicit monomial expansion; the colored-multigraph representation unifies PIP generation, evaluation, and cross-system description, opening new avenues for constructing PIP potentials for large systems and for transfer across systems.
